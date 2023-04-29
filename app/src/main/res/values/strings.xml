@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Nos importas Hackacom</string>
+    <string name="btn_confidence_users">Usuarios de confianza</string>
+    <string name="btn_panic_button">Botón de pánico</string>
+    <string name="btn_zoned_map">Zonas seguras</string>
+
 </resources>
