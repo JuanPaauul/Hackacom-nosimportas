@@ -3,9 +3,9 @@ package com.moresoft.nosimportashackacom
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.moresoft.nosimportas.ConfidenceUsersFragment
-import com.moresoft.nosimportas.PanicButtonFragment
-import com.moresoft.nosimportas.ZonedMapFragment
+import com.moresoft.nosimportashackacom.ConfidenceUsersFragment
+import com.moresoft.nosimportashackacom.PanicButtonFragment
+import com.moresoft.nosimportashackacom.ZonedMapFragment
 import com.moresoft.nosimportashackacom.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

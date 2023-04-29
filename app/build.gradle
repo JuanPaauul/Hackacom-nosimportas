@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.moresoft.nosimportashackacom"
-        minSdk 20
+        minSdk 21
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -35,6 +35,14 @@ android {
 }
 
 dependencies {
+    implementation project(":domain")
+    implementation project(":framework")
+    implementation project(":usercases")
+
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2'
+    runtimeOnly group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-android', version: '1.6.4'
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
