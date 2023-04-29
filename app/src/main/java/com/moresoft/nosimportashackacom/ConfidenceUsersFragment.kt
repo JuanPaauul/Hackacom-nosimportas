@@ -1,15 +1,13 @@
-package com.moresoft.nosimportas
+package com.moresoft.nosimportashackacom
 
 import android.os.Bundle
-import android.speech.RecognizerIntent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.moresoft.nosimportashackacom.R
+import com.moresoft.domain.ConfideceUser
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -40,8 +38,23 @@ class ConfidenceUsersFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val list = arrayListOf<ConfideceUser>( ConfideceUser("roberto1", "calyr.software@gmail.com"),
+            ConfideceUser("roberto2", "calyr.software@gmail.com"),
+            ConfideceUser("roberto3", "calyr.software@gmail.com"),
+            ConfideceUser("roberto4", "calyr.software@gmail.com")
+        )
+
+        rootView = inflater.inflate(R.layout.fragment_confidence_users, container, false)
+
+        val linearLayoutManager = LinearLayoutManager(this.context)
+        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+
+        recyclerView = rootView.findViewById<RecyclerView>(R.id.recycler_view)
+        recyclerView.layoutManager = linearLayoutManager
+        recyclerView.adapter = UserListAdapter(list, this)
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_confidence_users, container, false)
+        return rootView
     }
 
     companion object {

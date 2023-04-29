@@ -1,4 +1,4 @@
-package com.moresoft.nosimportas
+package com.moresoft.nosimportashackacom
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
