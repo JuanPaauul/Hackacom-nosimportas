@@ -1,3 +1,3 @@
 package com.moresoft.domain
 
-data class ConfideceUser(val name: String, val email: String)
+data class ConfidenceUser(val name: String, val lastName: String, val email: String, val imageUrl: String)

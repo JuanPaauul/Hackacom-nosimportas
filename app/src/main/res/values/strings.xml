@@ -4,4 +4,8 @@
     <string name="btn_panic_button">Botón de pánico</string>
     <string name="btn_zoned_map">Zonas seguras</string>
 
+    <string name="tv_name">Nombre</string>
+    <string name="tv_lastname">Apellido</string>
+    <string name="tv_email">Email</string>
+
 </resources>

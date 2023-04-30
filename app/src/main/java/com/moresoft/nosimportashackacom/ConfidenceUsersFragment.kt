@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
-import com.moresoft.domain.ConfideceUser
+import com.moresoft.domain.ConfidenceUser
 import com.moresoft.framework.RestApiAdapter
 import retrofit2.Call
 import retrofit2.Callback
@@ -48,12 +48,12 @@ class ConfidenceUsersFragment : Fragment() {
         val restApiAdapter = RestApiAdapter()
         val endPoint = restApiAdapter.connectionApi()
         val bookResponseCall = endPoint.getAllPost()
-        bookResponseCall.enqueue( object : Callback<List<ConfideceUser>> {
-            override fun onFailure(call: Call<List<ConfideceUser>>, t: Throwable) {
+        /*ookResponseCall.enqueue( object : Callback<List<ConfidenceUser>> {
+            override fun onFailure(call: Call<List<ConfidenceUser>>, t: Throwable) {
                 t.printStackTrace()
             }
 
-            override fun onResponse(call: Call<List<ConfideceUser>>, response: Response<List<ConfideceUser>>) {
+            override fun onResponse(call: Call<List<ConfidenceUser>>, response: Response<List<ConfidenceUser>>) {
                 val posts = response.body()
                 Log.d("RESP POST", Gson().toJson(posts))
                 posts?.forEach {
@@ -61,12 +61,12 @@ class ConfidenceUsersFragment : Fragment() {
                     Log.d("RESP user email", it.email)
                 }
             }
-        })
+        })*/
 
-        val list = arrayListOf<ConfideceUser>( ConfideceUser("roberto1", "calyr.software@gmail.com"),
-            ConfideceUser("roberto2", "calyr.software@gmail.com"),
-            ConfideceUser("roberto3", "calyr.software@gmail.com"),
-            ConfideceUser("roberto4", "calyr.software@gmail.com")
+        val list = arrayListOf<ConfidenceUser>( ConfidenceUser("roberto1", "calisaya","calyr.software@gmail.com", "image"),
+            ConfidenceUser("roberto2", "calisaya", "calyr.software@gmail.com", "image"),
+            ConfidenceUser("roberto3", "calisaya","calyr.software@gmail.com", "image"),
+            ConfidenceUser("roberto4", "calisaya","calyr.software@gmail.com", "image")
         )
 
         rootView = inflater.inflate(R.layout.fragment_confidence_users, container, false)

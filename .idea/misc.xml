@@ -3,11 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Y540/Documents/2023-I/NosimportasHackacom/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.184" />
         <entry key="..\:/Users/Y540/Documents/2023-I/NosimportasHackacom/app/src/main/res/drawable/ic_baseline_location_on_24.xml" value="0.243" />
+        <entry key="..\:/Users/Y540/Documents/2023-I/NosimportasHackacom/app/src/main/res/drawable/panic_button_background.xml" value="0.184" />
         <entry key="..\:/Users/Y540/Documents/2023-I/NosimportasHackacom/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Users/Y540/Documents/2023-I/NosimportasHackacom/app/src/main/res/layout/fragment_confidence_users.xml" value="0.358695652173913" />
-        <entry key="..\:/Users/Y540/Documents/2023-I/NosimportasHackacom/app/src/main/res/layout/fragment_panic_button.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/Y540/Documents/2023-I/NosimportasHackacom/app/src/main/res/layout/fragment_panic_button.xml" value="0.5" />
         <entry key="..\:/Users/Y540/Documents/2023-I/NosimportasHackacom/app/src/main/res/layout/fragment_zoned_map.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/Y540/Documents/2023-I/NosimportasHackacom/app/src/main/res/layout/user_confidence.xml" value="0.75" />
         <entry key="..\:/Users/Y540/Documents/2023-I/NosimportasHackacom/app/src/main/res/layout/user_row.xml" value="0.5" />
         <entry key="..\:/Users/Y540/Documents/2023-I/NosimportasHackacom/app/src/main/res/menu/bottom_nav_menu.xml" value="0.3625" />
         <entry key="..\:/uNIVERSIDAD/HAckton/Hackacom-nosimportas/app/src/main/res/layout/fragment_zoned_map.xml" value="0.358695652173913" />
