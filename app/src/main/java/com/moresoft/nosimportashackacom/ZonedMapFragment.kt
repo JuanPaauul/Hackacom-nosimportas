@@ -28,7 +28,7 @@ class ZonedMapFragment : Fragment() {
     private lateinit var mMap: GoogleMap
     private var statusUser by Delegates.notNull<Boolean>()
     private lateinit var redzone: List<LatLng>
-    public var riskZone=false
+    private var riskZone: Boolean = false
     private lateinit var lastLocation: Location
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     val polyPointsGreen : PolygonOptions = PolygonOptions().add(LatLng(-17.392308, -66.145205))
@@ -56,20 +56,6 @@ class ZonedMapFragment : Fragment() {
 
         // Async map
         supportMapFragment!!.getMapAsync { googleMap ->
-            // When map is loaded
-            /*googleMap.setOnMapClickListener { latLng -> // When clicked on map
-                // Initialize marker options
-                val markerOptions = MarkerOptions()
-                // Set position of marker
-                markerOptions.position(latLng)
-                // Set title of marker
-                markerOptions.title(latLng.latitude.toString() + " : " + latLng.longitude)
-                // Remove all marker
-                googleMap.clear()
-                // Animating to zoom the marker
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f))
-                // Add marker on map
-                googleMap.addMarker(markerOptions)*/
             val coordinates = LatLng(-17.393287, -66.144586)
             val marker: MarkerOptions = MarkerOptions().position(coordinates).title("Mi markador")
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 15f))
@@ -79,16 +65,7 @@ class ZonedMapFragment : Fragment() {
 
 
         }
-        if (riskZone){
-            AlertDialog.Builder(requireActivity()).apply {
-                setTitle("!Cuidado usted acaba de entra a una zona de riesgo")
-                setMessage("Estimado usuario usuario acaba de ingresar a una zona de riesgo alto por lo cual estaremos preguntando por su integridad cada cierto tiempo")
-                setPositiveButton("Estoy Bien"){_:DialogInterface,_:Int ->
-                    statusUser=true
-                }
-                setNegativeButton("Ayuda",null)
-            }
-        }
+
         // Return view
         //createMarker()
         return view
@@ -129,7 +106,16 @@ class ZonedMapFragment : Fragment() {
             .strokeColor(Color.RED)
         //val polygon : Polyline = googleMap.addP
 
-        riskZone=pointIsInPolygon(LatLng(-17.393287, -66.144586),polyPoints.points)
+        if(pointIsInPolygon(LatLng(-17.393287, -66.144586),polyPoints.points)){
+            AlertDialog.Builder(requireActivity()).apply {
+                setTitle("!Cuidado usted acaba de entra a una zona de riesgo")
+                setMessage("Estimado usuario usuario acaba de ingresar a una zona de riesgo alto por lo cual estaremos preguntando por su integridad cada cierto tiempo")
+                setPositiveButton("Estoy Bien"){_:DialogInterface,_:Int ->
+                    statusUser=true
+                }
+                setNegativeButton("Ayuda",null)
+            }.create().show()
+        }
 
         redzone=polyPoints.points
 
