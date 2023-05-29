@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.moresoft.domain.ConfidenceUser
+import com.moresoft.domain.UsersApiResponse
 import com.moresoft.framework.RestApiAdapter
 import retrofit2.Call
 import retrofit2.Callback
@@ -32,6 +33,9 @@ class ConfidenceUsersFragment : Fragment() {
     private var param2: String? = null
     lateinit var rootView: View
     lateinit var recyclerView : RecyclerView
+    var confidenceUsers = listOf<ConfidenceUser>()
+
+    private lateinit var userListAdapter: UserListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,29 +49,40 @@ class ConfidenceUsersFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        userListAdapter = UserListAdapter(confidenceUsers, this)
+
         val restApiAdapter = RestApiAdapter()
         val endPoint = restApiAdapter.connectionApi()
         val bookResponseCall = endPoint.getAllPost()
-        /*ookResponseCall.enqueue( object : Callback<List<ConfidenceUser>> {
-            override fun onFailure(call: Call<List<ConfidenceUser>>, t: Throwable) {
+        bookResponseCall.enqueue(object : Callback<UsersApiResponse> {
+            override fun onFailure(call: Call<UsersApiResponse>, t: Throwable) {
                 t.printStackTrace()
             }
 
-            override fun onResponse(call: Call<List<ConfidenceUser>>, response: Response<List<ConfidenceUser>>) {
-                val posts = response.body()
-                Log.d("RESP POST", Gson().toJson(posts))
-                posts?.forEach {
-                    Log.d("RESP user name", it.name)
-                    Log.d("RESP user email", it.email)
+            override fun onResponse(call: Call<UsersApiResponse>, response: Response<UsersApiResponse>) {
+                if (response.isSuccessful) {
+                    val usersApiResponse = response.body()
+                    val responseData = usersApiResponse?.data
+                    responseData?.forEach { confidenceUser ->
+                        Log.d("RESP user id", confidenceUser.id.toString())
+                        Log.d("RESP user email", confidenceUser.email)
+                        Log.d("RESP user email", confidenceUser.first_name)
+                        Log.d("RESP user email", confidenceUser.last_name)
+                        Log.d("RESP user email", confidenceUser.avatar)
+                    }
+                    if (responseData != null) {
+                        confidenceUsers = responseData
+                        userListAdapter.updateData(confidenceUsers)
+                    }
+                } else {
+                    // La llamada no fue exitosa, manejar el error
                 }
             }
-        })*/
+        })
 
-        val list = arrayListOf<ConfidenceUser>( ConfidenceUser("roberto1", "calisaya","calyr.software@gmail.com", "image"),
-            ConfidenceUser("roberto2", "calisaya", "calyr.software@gmail.com", "image"),
-            ConfidenceUser("roberto3", "calisaya","calyr.software@gmail.com", "image"),
-            ConfidenceUser("roberto4", "calisaya","calyr.software@gmail.com", "image")
-        )
+        if(confidenceUsers.isEmpty()){
+            //Mostrar icono de carga
+        }
 
         rootView = inflater.inflate(R.layout.fragment_confidence_users, container, false)
 
@@ -76,7 +91,10 @@ class ConfidenceUsersFragment : Fragment() {
 
         recyclerView = rootView.findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = linearLayoutManager
-        recyclerView.adapter = UserListAdapter(list, this)
+
+        Log.d("RESP length", confidenceUsers.size.toString())
+
+        recyclerView.adapter = userListAdapter
 
         // Inflate the layout for this fragment
         return rootView
