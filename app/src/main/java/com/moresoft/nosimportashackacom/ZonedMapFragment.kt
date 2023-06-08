@@ -1,6 +1,6 @@
 package com.moresoft.nosimportashackacom
 
-import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.pm.PackageManager
@@ -12,12 +12,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import kotlin.properties.Delegates
@@ -28,9 +27,12 @@ class ZonedMapFragment : Fragment() {
     private lateinit var mMap: GoogleMap
     private var statusUser by Delegates.notNull<Boolean>()
     private lateinit var redzone: List<LatLng>
-    private var riskZone: Boolean = false
-    private lateinit var lastLocation: Location
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    //private var riskZone: Boolean = false
+    //private lateinit var lastLocation: Location
+    private lateinit var currentLocation: Location
+   // private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var fusedLocationClientProviderClient: FusedLocationProviderClient
+    private val perimissionCode=101
     val polyPointsGreen : PolygonOptions = PolygonOptions().add(LatLng(-17.392308, -66.145205))
         .add(LatLng(-17.394992, -66.144584))
         .add(LatLng(-17.395635, -66.148144))
@@ -41,6 +43,8 @@ class ZonedMapFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        fusedLocationClientProviderClient=LocationServices.getFusedLocationProviderClient(this.requireContext())
+        getCurrentLocation()
     }
 
     override fun onCreateView(
@@ -56,10 +60,10 @@ class ZonedMapFragment : Fragment() {
 
         // Async map
         supportMapFragment!!.getMapAsync { googleMap ->
-            val coordinates = LatLng(-17.393287, -66.144586)
-            val marker: MarkerOptions = MarkerOptions().position(coordinates).title("Mi markador")
+            val coordinates = LatLng(currentLocation.latitude,currentLocation.longitude)
+            //val marker: MarkerOptions = MarkerOptions().position(coordinates).title("Mi markador")
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 15f))
-            googleMap.addMarker(marker)
+            //googleMap.addMarker(marker)
             val polygon: Polygon = googleMap.addPolygon(createPolyline())
             googleMap.addPolygon(polyPointsGreen)
 
@@ -126,43 +130,61 @@ class ZonedMapFragment : Fragment() {
         val marker: MarkerOptions = MarkerOptions().position(coordinates).title("Mi markador")
         mMap.addMarker(marker)
     }
-    private fun islocationPermissionOn()=ContextCompat.checkSelfPermission(requireActivity(),Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED
+    //private fun islocationPermissionOn()=ContextCompat.checkSelfPermission(requireActivity(),Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED
 
-     private fun enableLocation(){
-         if(!::mMap.isInitialized)return
-         if (islocationPermissionOn()){
-             if (ActivityCompat.checkSelfPermission(
-                     requireActivity(),
-                     Manifest.permission.ACCESS_FINE_LOCATION
-                 ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                     requireActivity(),
-                     Manifest.permission.ACCESS_COARSE_LOCATION
-                 ) != PackageManager.PERMISSION_GRANTED
-             ) {
-                 // TODO: Consider calling
-                 //    ActivityCompat#requestPermissions
-                 // here to request the missing permissions, and then overriding
-                 //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                 //                                          int[] grantResults)
-                 // to handle the case where the user grants the permission. See the documentation
-                 // for ActivityCompat#requestPermissions for more details.
-                 return
-             }
-             mMap.isMyLocationEnabled=true
-         }
-         else{
+    /*private fun enableLocation(){
+        if(!::mMap.isInitialized)return
+        if (islocationPermissionOn()){
+            if (ActivityCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return
+            }
+            mMap.isMyLocationEnabled=true
+        }
+        else{
             // requestLocationPermission()
-         }
-     }
-     /*private fun requestLocationPermission () {
-         if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-         ) {
-             Toast.makeText( requireActivity(), "Ve a ajustes y acepta los permisos", Toast.LENGTH_SHORT).show()
-         } else {
-             ActivityCompat.requestPermissions(
-                 requireActivity(),
-             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-         }
-     }*/
+        }
+    }*/
+    private fun getCurrentLocation(){
+        if(ActivityCompat.checkSelfPermission(this.requireContext(),android.Manifest.permission.ACCESS_FINE_LOCATION)!=
+            PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.requireContext(),android.Manifest.permission.ACCESS_COARSE_LOCATION)!=
+            PackageManager.PERMISSION_GRANTED){
 
+            ActivityCompat.requestPermissions(this.requireContext() as Activity, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),perimissionCode)
+            return
+        }
+        val getLocation=fusedLocationClientProviderClient.lastLocation.addOnSuccessListener {
+            location-> if (location!=null){
+                currentLocation=location
+                Toast.makeText(context,currentLocation.latitude.toString()+""+currentLocation.longitude.toString(),Toast.LENGTH_LONG).show()
+        }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode){
+            perimissionCode->if (grantResults.isNotEmpty()&& grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                getCurrentLocation()
+            }
+        }
+    }
 }
+/*private fun requestLocationPermission () {*/
