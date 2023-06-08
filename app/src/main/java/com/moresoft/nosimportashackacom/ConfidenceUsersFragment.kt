@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.moresoft.domain.ConfidenceUser
-import com.moresoft.domain.UsersApiResponse
+import com.moresoft.domain.User
 import com.moresoft.framework.RestApiAdapter
 import retrofit2.Call
 import retrofit2.Callback
@@ -54,21 +54,17 @@ class ConfidenceUsersFragment : Fragment() {
         val restApiAdapter = RestApiAdapter()
         val endPoint = restApiAdapter.connectionApi()
         val bookResponseCall = endPoint.getAllPost()
-        bookResponseCall.enqueue(object : Callback<UsersApiResponse> {
-            override fun onFailure(call: Call<UsersApiResponse>, t: Throwable) {
+        bookResponseCall.enqueue(object : Callback<List<User>> {
+            override fun onFailure(call: Call<List<User>>, t: Throwable) {
                 t.printStackTrace()
             }
 
-            override fun onResponse(call: Call<UsersApiResponse>, response: Response<UsersApiResponse>) {
+            override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
                 if (response.isSuccessful) {
                     val usersApiResponse = response.body()
-                    val responseData = usersApiResponse?.data
+                    val responseData = usersApiResponse?.firstOrNull()?.confidenceUsers
                     responseData?.forEach { confidenceUser ->
-                        Log.d("RESP user id", confidenceUser.id.toString())
                         Log.d("RESP user email", confidenceUser.email)
-                        Log.d("RESP user email", confidenceUser.first_name)
-                        Log.d("RESP user email", confidenceUser.last_name)
-                        Log.d("RESP user email", confidenceUser.avatar)
                     }
                     if (responseData != null) {
                         confidenceUsers = responseData

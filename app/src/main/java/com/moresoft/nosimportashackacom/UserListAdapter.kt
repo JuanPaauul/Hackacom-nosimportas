@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.moresoft.domain.ConfidenceUser
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
+import java.math.BigInteger
+import java.security.MessageDigest
 
 class UserListAdapter(private var items: List<ConfidenceUser>, val context: ConfidenceUsersFragment): RecyclerView.Adapter<UserListAdapter.UserListViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserListViewHolder {
@@ -23,14 +25,14 @@ class UserListAdapter(private var items: List<ConfidenceUser>, val context: Conf
     }
     override fun onBindViewHolder(holder: UserListViewHolder, position: Int) {
         val item = items[position]
-        holder.itemView.findViewById<TextView>(R.id.tv_confidence_name)?.text = item.first_name
-        holder.itemView.findViewById<TextView>(R.id.tv_confidence_lastname)?.text = item.last_name
+        holder.itemView.findViewById<TextView>(R.id.tv_confidence_name)?.text = "Test name"
+        holder.itemView.findViewById<TextView>(R.id.tv_confidence_lastname)?.text = "Test last name"
         holder.itemView.findViewById<TextView>(R.id.tv_confidence_email)?.text = item.email
 
         val imageView = holder.itemView.findViewById<ImageView>(R.id.iv_confidence_image)
         if (imageView != null) {
             Picasso.get()
-                .load(item.avatar)
+                .load("https://xsgames.co/randomusers/avatar.php?g=male")
                 .error(R.mipmap.ic_launcher_round)
                 .into(imageView)
         }
@@ -39,6 +41,11 @@ class UserListAdapter(private var items: List<ConfidenceUser>, val context: Conf
         items = users
         notifyDataSetChanged()
     }
+    fun md5(input:String): String {
+        val md = MessageDigest.getInstance("MD5")
+        return BigInteger(1, md.digest(input.toByteArray())).toString(16).padStart(32, '0')
+    }
+
     class UserListViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 }
 
