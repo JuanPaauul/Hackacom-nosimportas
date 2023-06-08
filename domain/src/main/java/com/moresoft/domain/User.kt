@@ -1,6 +1,7 @@
 package com.moresoft.domain
 
 data class User (
+    val id: Id,
     val userId: String,
     val firstName: String,
     val lastName: String,
