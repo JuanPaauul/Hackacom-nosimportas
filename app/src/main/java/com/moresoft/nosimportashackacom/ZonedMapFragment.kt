@@ -61,9 +61,9 @@ class ZonedMapFragment : Fragment() {
         // Async map
         supportMapFragment!!.getMapAsync { googleMap ->
             val coordinates = LatLng(currentLocation.latitude,currentLocation.longitude)
-            //val marker: MarkerOptions = MarkerOptions().position(coordinates).title("Mi markador")
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 15f))
-            //googleMap.addMarker(marker)
+            val marker: MarkerOptions = MarkerOptions().position(coordinates).title("Mi markador")
+            googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 15f))
+            googleMap.addMarker(marker)
             val polygon: Polygon = googleMap.addPolygon(createPolyline())
             googleMap.addPolygon(polyPointsGreen)
 
