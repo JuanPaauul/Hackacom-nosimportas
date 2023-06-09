@@ -28,9 +28,8 @@ class ZonedMapFragment : Fragment() {
     private var statusUser by Delegates.notNull<Boolean>()
     private lateinit var redzone: List<LatLng>
     //private var riskZone: Boolean = false
-    //private lateinit var lastLocation: Location
     private lateinit var currentLocation: Location
-   // private lateinit var fusedLocationClient: FusedLocationProviderClient
+
     private lateinit var fusedLocationClientProviderClient: FusedLocationProviderClient
     private val perimissionCode=101
     val polyPointsGreen : PolygonOptions = PolygonOptions().add(LatLng(-17.392308, -66.145205))
@@ -50,25 +49,12 @@ class ZonedMapFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View{
         // Initialize view
         val view: View = inflater.inflate(R.layout.fragment_zoned_map, container, false)
 
         // Initialize map fragment
-        val supportMapFragment =
-            childFragmentManager.findFragmentById(R.id.google_map) as SupportMapFragment?
 
-        // Async map
-        supportMapFragment!!.getMapAsync { googleMap ->
-            val coordinates = LatLng(currentLocation.latitude,currentLocation.longitude)
-            val marker: MarkerOptions = MarkerOptions().position(coordinates).title("Mi markador")
-            googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 15f))
-            googleMap.addMarker(marker)
-            val polygon: Polygon = googleMap.addPolygon(createPolyline())
-            googleMap.addPolygon(polyPointsGreen)
-
-
-        }
 
         // Return view
         //createMarker()
@@ -167,10 +153,28 @@ class ZonedMapFragment : Fragment() {
             return
         }
         val getLocation=fusedLocationClientProviderClient.lastLocation.addOnSuccessListener {
-            location-> if (location!=null){
+            location->
+            if (location!=null){
                 currentLocation=location
                 Toast.makeText(context,currentLocation.latitude.toString()+""+currentLocation.longitude.toString(),Toast.LENGTH_LONG).show()
-        }
+                val supportMapFragment =
+                    childFragmentManager.findFragmentById(R.id.google_map) as SupportMapFragment?
+
+                // Async map
+                supportMapFragment!!.getMapAsync { googleMap ->
+
+                    /*currentLocation.latitude=-17.393287
+                    currentLocation.longitude=-66.144586*/
+                    val coordinates = LatLng(currentLocation.latitude,currentLocation.longitude)
+                    val marker: MarkerOptions = MarkerOptions().position(coordinates).title("Mi markador")
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 15f))
+                    googleMap.addMarker(marker)
+                    val polygon: Polygon = googleMap.addPolygon(createPolyline())
+                    googleMap.addPolygon(polyPointsGreen)
+
+
+                }
+            }
         }
     }
 
