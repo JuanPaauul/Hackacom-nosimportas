@@ -4,65 +4,67 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
+import com.google.android.material.button.MaterialButton
 
-
-@Suppress("DEPRECATION")
 class LoginFragment : AppCompatActivity() {
 
-    private val RC_SIGN_IN = 123;
+    private lateinit var gso: GoogleSignInOptions
+    private lateinit var gsc: GoogleSignInClient
+    private lateinit var googleBtn: SignInButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_fragment)
 
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        googleBtn = findViewById<SignInButton>(R.id.sign_in_button)
+        googleBtn.setSize(SignInButton.SIZE_STANDARD)
+
+        gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .build()
+        gsc = GoogleSignIn.getClient(this, gso)
 
-        // Build a GoogleSignInClient with the options specified by gso.
-        val mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        // Check for existing Google Sign In account, if the user is already signed in
-        // the GoogleSignInAccount will be non-null.
-        val account = GoogleSignIn.getLastSignedInAccount(this)
-
-        // Set the dimensions of the sign-in button.
-        val signInButton = findViewById<SignInButton>(R.id.sign_in_button)
-        signInButton.setSize(SignInButton.SIZE_STANDARD)
-
-        //findViewById<SignInButton>(R.id.sign_in_button)
-        // .setOnClickListener(this.applicationContext);
-        signInButton.setOnClickListener {
-            val signInIntent = mGoogleSignInClient.signInIntent
-            startActivityForResult(signInIntent, RC_SIGN_IN)
+        val acct = GoogleSignIn.getLastSignedInAccount(this)
+        if (acct != null) {
+            navigateToSecondActivity()
         }
 
+        googleBtn.setOnClickListener {
+            signIn()
+        }
+    }
+
+    private fun signIn() {
+        val signInIntent = gsc.signInIntent
+        startActivityForResult(signInIntent, 1000)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
-            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
-            handleSignInResult(task)
+        if (requestCode == 1000) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                task.getResult(ApiException::class.java)
+                navigateToSecondActivity()
+            } catch (e: ApiException) {
+                e.message?.let { Log.d("RESP google exception", it) }
+                Toast.makeText(applicationContext, "Something went wrong", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
-    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
-        try {
-            val account = completedTask.getResult(ApiException::class.java)
-        } catch (e: ApiException) {
-            // The ApiException status code indicates the detailed failure reason.
-        }
+    private fun navigateToSecondActivity() {
+        finish()
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
     }
 }
