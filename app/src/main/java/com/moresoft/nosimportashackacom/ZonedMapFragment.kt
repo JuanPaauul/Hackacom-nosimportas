@@ -13,6 +13,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -29,7 +31,6 @@ class ZonedMapFragment : Fragment() {
     private lateinit var redzone: List<LatLng>
     //private var riskZone: Boolean = false
     private lateinit var currentLocation: Location
-
     private lateinit var fusedLocationClientProviderClient: FusedLocationProviderClient
     private val perimissionCode=101
     val polyPointsGreen : PolygonOptions = PolygonOptions().add(LatLng(-17.354830, -66.156136))
@@ -103,7 +104,14 @@ class ZonedMapFragment : Fragment() {
                 setPositiveButton("Estoy Bien"){_:DialogInterface,_:Int ->
                     statusUser=true
                 }
-                setNegativeButton("Ayuda",null)
+                setNegativeButton("Ayuda"){_,_ ->
+                    val myfragment = PanicButtonFragment()
+                    val fragmentManager = requireActivity().supportFragmentManager
+                    val fragmentTransaction= fragmentManager.beginTransaction()
+                    fragmentTransaction.replace(R.id.frame_layout,myfragment)
+                    fragmentTransaction.addToBackStack(null)
+                    fragmentTransaction.commit()
+                }
             }.create().show()
         }
 
