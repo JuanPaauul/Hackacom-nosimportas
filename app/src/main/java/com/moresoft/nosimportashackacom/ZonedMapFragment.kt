@@ -32,11 +32,11 @@ class ZonedMapFragment : Fragment() {
 
     private lateinit var fusedLocationClientProviderClient: FusedLocationProviderClient
     private val perimissionCode=101
-    val polyPointsGreen : PolygonOptions = PolygonOptions().add(LatLng(-17.392308, -66.145205))
-        .add(LatLng(-17.394992, -66.144584))
-        .add(LatLng(-17.395635, -66.148144))
-        .add(LatLng(-17.392914, -66.148822))
-        .add(LatLng(-17.392308, -66.145205))
+    val polyPointsGreen : PolygonOptions = PolygonOptions().add(LatLng(-17.354830, -66.156136))
+        .add(LatLng(-17.355147, -66.155085))
+        .add(LatLng(-17.355834, -66.155254))
+        .add(LatLng(-17.355311, -66.156316))
+        .add(LatLng(-17.354830, -66.156136))
         .fillColor(Color.parseColor("#95FF99"))
         .strokeColor(Color.GREEN)
 
@@ -86,17 +86,17 @@ class ZonedMapFragment : Fragment() {
     }
 
     private fun createPolyline( ): PolygonOptions {
-        val polyPoints : PolygonOptions = PolygonOptions().add(LatLng(-17.392308, -66.145205))
-            .add(LatLng(-17.392308, -66.145205))
-            .add(LatLng(-17.394992, -66.144584))
-            .add(LatLng(-17.394440, -66.142310))
-            .add(LatLng(-17.391860, -66.142803))
-            .add(LatLng(-17.392308, -66.145205))
+        val polyPoints : PolygonOptions = PolygonOptions()
+            .add(LatLng(-17.354822, -66.156136))
+            .add(LatLng(-17.355161, -66.155111))
+            .add(LatLng(-17.354780, -66.155021))
+            .add(LatLng(-17.354520, -66.156023))
+            .add(LatLng(-17.354822, -66.156136))
             .fillColor(Color.parseColor("#BFF06262"))
             .strokeColor(Color.RED)
         //val polygon : Polyline = googleMap.addP
 
-        if(pointIsInPolygon(LatLng(-17.393287, -66.144586),polyPoints.points)){
+        if(pointIsInPolygon(LatLng(currentLocation.latitude,currentLocation.longitude),polyPoints.points)){
             AlertDialog.Builder(requireActivity()).apply {
                 setTitle("!Cuidado usted acaba de entra a una zona de riesgo")
                 setMessage("Estimado usuario usuario acaba de ingresar a una zona de riesgo alto por lo cual estaremos preguntando por su integridad cada cierto tiempo")
@@ -169,7 +169,7 @@ class ZonedMapFragment : Fragment() {
                     val marker: MarkerOptions = MarkerOptions().position(coordinates).title("Mi markador")
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 15f))
                     googleMap.addMarker(marker)
-                    val polygon: Polygon = googleMap.addPolygon(createPolyline())
+                    googleMap.addPolygon(createPolyline())
                     googleMap.addPolygon(polyPointsGreen)
 
 
