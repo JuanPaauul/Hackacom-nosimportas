@@ -3,9 +3,11 @@ package com.moresoft.nosimportashackacom
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,14 +15,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolygonOptions
+import java.net.URLEncoder
 import kotlin.properties.Delegates
 
 
@@ -105,12 +108,14 @@ class ZonedMapFragment : Fragment() {
                     statusUser=true
                 }
                 setNegativeButton("Ayuda"){_,_ ->
+                    sentMessage()
                     val myfragment = PanicButtonFragment()
                     val fragmentManager = requireActivity().supportFragmentManager
                     val fragmentTransaction= fragmentManager.beginTransaction()
                     fragmentTransaction.replace(R.id.frame_layout,myfragment)
                     fragmentTransaction.addToBackStack(null)
                     fragmentTransaction.commit()
+
                 }
             }.create().show()
         }
@@ -124,34 +129,6 @@ class ZonedMapFragment : Fragment() {
         val marker: MarkerOptions = MarkerOptions().position(coordinates).title("Mi markador")
         mMap.addMarker(marker)
     }
-    //private fun islocationPermissionOn()=ContextCompat.checkSelfPermission(requireActivity(),Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED
-
-    /*private fun enableLocation(){
-        if(!::mMap.isInitialized)return
-        if (islocationPermissionOn()){
-            if (ActivityCompat.checkSelfPermission(
-                    requireActivity(),
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    requireActivity(),
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return
-            }
-            mMap.isMyLocationEnabled=true
-        }
-        else{
-            // requestLocationPermission()
-        }
-    }*/
     private fun getCurrentLocation(){
         if(ActivityCompat.checkSelfPermission(this.requireContext(),android.Manifest.permission.ACCESS_FINE_LOCATION)!=
             PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.requireContext(),android.Manifest.permission.ACCESS_COARSE_LOCATION)!=
@@ -198,5 +175,20 @@ class ZonedMapFragment : Fragment() {
             }
         }
     }
+    fun sentMessage(){
+        val  number = +59175989769
+        val i = Intent(Intent.ACTION_VIEW)
+        i.type="text/plain"
+
+        //i.putExtra(Intent.EXTRA_TEXT,"Hola")
+        val url = "https://api.whatsapp.com/send?phone=" + number.toString() + "&text="+
+                URLEncoder.encode("Ayuda me encuentro en peligro, en la siguiente ubicacion: https://www.google.com/maps/search/?api=1&query=${currentLocation.latitude},${currentLocation.longitude}","UTF-8")
+        i.setPackage("com.whatsapp")
+        i.data = Uri.parse(url)
+
+        startActivity(i)
+
+
+    }
 }
-/*private fun requestLocationPermission () {*/
+
